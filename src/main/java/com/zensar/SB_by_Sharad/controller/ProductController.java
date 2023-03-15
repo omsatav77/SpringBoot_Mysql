@@ -3,7 +3,9 @@ package com.zensar.SB_by_Sharad.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,7 +16,8 @@ import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.zensar.SB_by_Sharad.Entity.Product;
+import com.zensar.SB_by_Sharad.Entity.ProductEntity;
+import com.zensar.SB_by_Sharad.dto.ProductDTO;
 import com.zensar.SB_by_Sharad.service.ProductServiceImpl;
 
 @RestController
@@ -32,32 +35,38 @@ public class ProductController {
 
 	@PostMapping(value = "/products", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public void insertProduct(@RequestBody Product product, @RequestHeader("Authorization") String authorization) {
+	public ResponseEntity<ProductEntity> insertProduct(@RequestBody ProductDTO product,
+			@RequestHeader("Authorization") String authorization) {
 		productServiceImpl.insertProduct(product, authorization);
+		return new ResponseEntity<ProductEntity>(productServiceImpl.insertProduct(product, authorization),
+				HttpStatus.CREATED);
 
 	}
 
 	@GetMapping(value = "/products", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public List<Product> getAllProduct() {
-		return productServiceImpl.getAllProduct();
+	public ResponseEntity<List<ProductEntity>> getAllProduct() {
+		 productServiceImpl.getAllProduct();
+		 return new ResponseEntity<List<ProductEntity>>(productServiceImpl.getAllProduct(), HttpStatus.FOUND);
 	}
 
 	@GetMapping(value = "/products/{productId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public Product getProductByid(@PathVariable("productId") int productId) {
-		return productServiceImpl.getProductByid(productId);
+	public ResponseEntity<ProductEntity> getProductByid(@PathVariable("productId") int productId) {
+		productServiceImpl.getProductByid(productId);
+		return new ResponseEntity<ProductEntity>(productServiceImpl.getProductByid(productId), HttpStatus.FOUND);
 	}
 
 	@DeleteMapping("/products/{productId}")
-	public void deleteProductById(@PathVariable int productId) {
+	public ResponseEntity<String> deleteProductById(@PathVariable int productId) {
 		productServiceImpl.deleteProductById(productId);
+		return new ResponseEntity<String>("product deleted", HttpStatus.OK);
 	}
 
 	@PutMapping("/products/{productId}")
-	public void updateProduct(@PathVariable("productId") int pid, @RequestBody Product p) {
-
+	public ResponseEntity<String> updateProduct(@PathVariable("productId") int pid, @RequestBody ProductEntity p) {
 		productServiceImpl.updateProduct(pid, p);
+		return new ResponseEntity<String>("product updated", HttpStatus.OK);
 	}
 
 }

@@ -1,6 +1,5 @@
 package com.zensar.SB_by_Sharad.service;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +13,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 
-import com.zensar.SB_by_Sharad.Entity.Product;
+import com.zensar.SB_by_Sharad.Entity.ProductEntity;
 import com.zensar.SB_by_Sharad.Repo.ProductRepository;
+import com.zensar.SB_by_Sharad.dto.ProductDTO;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -25,21 +25,27 @@ public class ProductServiceImpl implements ProductService {
 
 	@PostMapping(value = "/products", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public void insertProduct(@RequestBody Product product, @RequestHeader("Authorization") String authorization) {
+	public ProductEntity insertProduct(@RequestBody ProductDTO product,
+			@RequestHeader("Authorization") String authorization) {
 
-		productRepository.save(product);
+		ProductEntity productEntity = new ProductEntity();
+		productEntity.setProductCost(product.getProductCost());
+		productEntity.setProductId(product.getProductId());
+		productEntity.setProductName(product.getProductName());
+		productRepository.save(productEntity);
+		return productEntity;
 
 	}
 
 	@GetMapping(value = "/products", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public List<Product> getAllProduct() {
+	public List<ProductEntity> getAllProduct() {
 		return productRepository.findAll();
 	}
 
 	@GetMapping(value = "/products/{productId}", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public Product getProductByid(@PathVariable("productId") int productId) {
+	public ProductEntity getProductByid(@PathVariable("productId") int productId) {
 		return productRepository.findById(productId).get();
 	}
 
@@ -49,8 +55,8 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@PutMapping("/products/{productId}")
-	public void updateProduct(@PathVariable("productId") int pid, @RequestBody Product p) {
-		Product p1 = productRepository.findById(pid).get();
+	public void updateProduct(@PathVariable("productId") int pid, @RequestBody ProductEntity p) {
+		ProductEntity p1 = productRepository.findById(pid).get();
 		p1.setProductCost(p.getProductCost());
 		p1.setProductId(p.getProductId());
 		p1.setProductName(p.getProductName());
@@ -58,4 +64,5 @@ public class ProductServiceImpl implements ProductService {
 		productRepository.save(p1);
 
 	}
+
 }
