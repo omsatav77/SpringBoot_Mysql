@@ -35,10 +35,10 @@ public class ProductController {
 
 	@PostMapping(value = "/products", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ResponseEntity<ProductEntity> insertProduct(@RequestBody ProductDTO product,
+	public ResponseEntity<ProductEntity> insertProduct(@RequestBody ProductDTO productDto,
 			@RequestHeader("Authorization") String authorization) {
-		productServiceImpl.insertProduct(product, authorization);
-		return new ResponseEntity<ProductEntity>(productServiceImpl.insertProduct(product, authorization),
+		productServiceImpl.insertProduct(productDto, authorization);
+		return new ResponseEntity<ProductEntity>(productServiceImpl.insertProduct(productDto, authorization),
 				HttpStatus.CREATED);
 
 	}

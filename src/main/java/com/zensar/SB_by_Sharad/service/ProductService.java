@@ -15,6 +15,6 @@ public interface ProductService {
 
 	public List<ProductEntity> getAllProduct();
 
-	public ProductEntity insertProduct(ProductDTO product, String authorization);
+	public ProductDTO insertProduct(ProductDTO product, String authorization);
 
 }

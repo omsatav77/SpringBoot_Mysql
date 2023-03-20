@@ -25,15 +25,18 @@ public class ProductServiceImpl implements ProductService {
 
 	@PostMapping(value = "/products", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
-	public ProductEntity insertProduct(@RequestBody ProductDTO product,
+	public ProductDTO insertProduct(@RequestBody ProductDTO productDto,
 			@RequestHeader("Authorization") String authorization) {
 
 		ProductEntity productEntity = new ProductEntity();
-		productEntity.setProductCost(product.getProductCost());
-		productEntity.setProductId(product.getProductId());
-		productEntity.setProductName(product.getProductName());
+//		productEntity.setProductCost(productDto.getProductCost());
+//		productEntity.setProductId(productDto.getProductId());
+//		productEntity.setProductName(productDto.getProductName());
+
+		productEntity = map_Set_ProductEntity(productDto);
 		productRepository.save(productEntity);
-		return productEntity;
+		productDto = setProductDTO(productEntity);
+		return productDto;
 
 	}
 
@@ -55,14 +58,37 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@PutMapping("/products/{productId}")
-	public void updateProduct(@PathVariable("productId") int pid, @RequestBody ProductEntity p) {
+	public void updateProduct(@PathVariable("productId") int pid, @RequestBody ProductEntity productEntity) {
 		ProductEntity p1 = productRepository.findById(pid).get();
-		p1.setProductCost(p.getProductCost());
-		p1.setProductId(p.getProductId());
-		p1.setProductName(p.getProductName());
+//		p1.setProductCost(productEntity.getProductCost());
+//		p1.setProductId(productEntity.getProductId());
+//		p1.setProductName(productEntity.getProductName());
+		ProductDTO p2 = null;
+		p2 = setProductDTO(productEntity);
 
 		productRepository.save(p1);
 
+	}
+
+	public ProductDTO setProductDTO(ProductEntity productEntity) {
+		ProductDTO productDTO = new ProductDTO();
+
+		productDTO.setProductCost(productEntity.getProductCost());
+		productDTO.setProductId(productEntity.getProductId());
+		productDTO.setProductName(productEntity.getProductName());
+
+		return productDTO;
+
+	}
+
+	public ProductEntity map_Set_ProductEntity(ProductDTO productDto) {
+
+		ProductEntity productEntity = new ProductEntity();
+
+		productEntity.setProductCost(productDto.getProductCost());
+		productEntity.setProductId(productDto.getProductId());
+		productEntity.setProductName(productDto.getProductName());
+		return productEntity;
 	}
 
 }
