@@ -2,6 +2,7 @@ package com.zensar.SB_by_Sharad.service;
 
 import java.util.List;
 
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -23,19 +24,27 @@ public class ProductServiceImpl implements ProductService {
 	@Autowired
 	ProductRepository productRepository;
 
+	
+	@Autowired
+	ModelMapper modelMapper;
+	
 	@PostMapping(value = "/products", consumes = { MediaType.APPLICATION_JSON_VALUE }, produces = {
 			MediaType.APPLICATION_JSON_VALUE })
 	public ProductDTO insertProduct(@RequestBody ProductDTO productDto,
 			@RequestHeader("Authorization") String authorization) {
 
-		ProductEntity productEntity = new ProductEntity();
+		
+		
+		ProductEntity productEntity = modelMapper.map(productDto, ProductEntity.class);
 //		productEntity.setProductCost(productDto.getProductCost());
 //		productEntity.setProductId(productDto.getProductId());
 //		productEntity.setProductName(productDto.getProductName());
 
-		productEntity = map_Set_ProductEntity(productDto);
+//		productEntity = map_Set_ProductEntity(productDto);
 		productRepository.save(productEntity);
-		productDto = setProductDTO(productEntity);
+//		productDto = setProductDTO(productEntity);
+		
+		productDto = modelMapper.map(productEntity,ProductDTO.class);
 		return productDto;
 
 	}
@@ -64,7 +73,9 @@ public class ProductServiceImpl implements ProductService {
 //		p1.setProductId(productEntity.getProductId());
 //		p1.setProductName(productEntity.getProductName());
 		ProductDTO p2 = null;
-		p2 = setProductDTO(productEntity);
+//		p2 = setProductDTO(productEntity);
+
+		p2 = modelMapper.map(productEntity, ProductDTO.class);
 
 		productRepository.save(p1);
 
